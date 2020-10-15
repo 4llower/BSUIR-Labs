@@ -1,6 +1,9 @@
-﻿using System;
+﻿using FileManager.Types;
+using FileManager.Validation;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -21,7 +24,7 @@ namespace FileManager
             directories.Items.Add("...");
             foreach (var directory in directoriesFromPath)
             {
-                directories.Items.Add(directory);
+                directories.Items.Add("/" + directory);
             }
 
             if (!isFilesHidden)
@@ -46,6 +49,89 @@ namespace FileManager
             else
             {
                 return path.Substring(0, path.LastIndexOf('/'));
+            }
+        }
+
+        public static void MoveFromPathToPath(string sourceDirName, string destDirName)
+        {
+            if (ValidationSchema.IsDirectory(sourceDirName))
+            {
+                Directory.Move(sourceDirName, destDirName);
+            }
+            else
+            {
+                File.Move(sourceDirName, destDirName);
+            }
+        }
+
+        public static void Delete(string sourceDirName)
+        {
+
+            if (ValidationSchema.IsDirectory(sourceDirName))
+            {
+                Directory.Delete(sourceDirName);
+            }
+            else
+            {
+                File.Delete(sourceDirName);
+            }
+        }
+
+        public static void Zip(string sourceDirName, string compressTo)
+        {
+
+            if (ValidationSchema.IsDirectory(sourceDirName))
+            {
+                throw new Exception(Exceptions.ArchiveError);
+            }
+            else
+            {
+                using (FileStream sourceStream = new FileStream(sourceDirName, FileMode.OpenOrCreate))
+                {
+                    using (FileStream targetStream = File.Create(compressTo))
+                    {
+                        using (GZipStream compressionStream = new GZipStream(targetStream, CompressionMode.Compress))
+                        {
+                            sourceStream.CopyTo(compressionStream);
+                            MessageBox.Show(String.Format("Файл был заархивирован в {0}", compressTo));
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void UnZip(string compressedFile, string decompressTo)
+        {
+
+            if (!ValidationSchema.IsZipArchive(compressedFile))
+            {
+                throw new Exception(Exceptions.UnarchiveError);
+            }
+            else
+            {
+                using (FileStream sourceStream = new FileStream(compressedFile, FileMode.OpenOrCreate))
+                {
+                    using (FileStream targetStream = File.Create(decompressTo))
+                    {
+                        using (GZipStream decompressionStream = new GZipStream(sourceStream, CompressionMode.Decompress))
+                        {
+                            decompressionStream.CopyTo(targetStream);
+                            MessageBox.Show(String.Format("Файл был разархивирован в {0}", decompressTo));
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void Copy(string sourceDirName, string destDirName)
+        {
+            if (ValidationSchema.IsDirectory(sourceDirName))
+            {
+                throw new Exception(Exceptions.CannotCopyFolderError);
+            }
+            else
+            {
+                File.Copy(sourceDirName, destDirName);
             }
         }
     }

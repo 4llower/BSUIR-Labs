@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 namespace FileManager
 {
@@ -29,6 +30,7 @@ namespace FileManager
             set
             {
                 if (_leftFilesHidden != value) DirectoriesWorker.UpdateDirectoriesListByPath(LeftDirectoryView, LeftPath, value);
+                
                 _leftFilesHidden = value;
             }
         }
@@ -48,29 +50,48 @@ namespace FileManager
 
         public string LeftPath
         {
-            get 
+            get
             {
                 return _leftPath;
-            } 
+            }
             set
             {
                 if (value.Length == 0) return;
-                if (_leftPath != value) DirectoriesWorker.UpdateDirectoriesListByPath(LeftDirectoryView, value, LeftFilesHiddenCheck);
-                _leftPath = value;
-            }
+
+                string lastValue = _leftPath;
+                try
+                {
+                    _leftPath = value;
+                    DirectoriesWorker.UpdateDirectoriesListByPath(LeftDirectoryView, _leftPath, LeftFilesHiddenCheck);
+                }
+                catch (Exception)
+                {
+                    _leftPath = lastValue;
+                    MessageBox.Show(Exceptions.AccessError);
+                }
+            } 
         }
 
         public string RightPath
         {
-            get 
+            get
             {
                 return _rightPath;
-            } 
+            }
             set
             {
                 if (value.Length == 0) return;
-                if (_rightPath != value) DirectoriesWorker.UpdateDirectoriesListByPath(RightDirectoryView, value, RightFilesHiddenCheck);
-                _rightPath = value;
+                string lastValue = _rightPath;
+                try
+                {
+                    _rightPath = value;
+                    DirectoriesWorker.UpdateDirectoriesListByPath(RightDirectoryView, _rightPath, LeftFilesHiddenCheck);
+                }
+                catch (Exception)
+                {
+                    _rightPath = lastValue;
+                    MessageBox.Show(Exceptions.AccessError);
+                }
             }
         }
 
@@ -90,9 +111,20 @@ namespace FileManager
                     return;
                 }
                 string selectedItem = LeftDirectoryView.SelectedItem.ToString();
-                if (ValidationSchema.IsDirectory(LeftPath + '/' + selectedItem))
+                if (selectedItem[0] == '/')
                 {
-                    LeftPath += "/" + selectedItem;
+                    LeftPath += selectedItem;
+                } else
+                {
+                    try
+                    {
+                        var currentWindow = new EditWindow(LeftPath + "/" + selectedItem);
+                        currentWindow.Show();
+                    } 
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
             };
 
@@ -104,9 +136,13 @@ namespace FileManager
                     return;
                 }
                 string selectedItem = RightDirectoryView.SelectedItem.ToString();
-                if (ValidationSchema.IsDirectory(RightPath + '/' + selectedItem))
+                if (selectedItem[0] == '/')
                 {
-                    RightPath += "/" + selectedItem;
+                    RightPath += selectedItem;
+                } else
+                {
+                    var currentWindow = new EditWindow(LeftPath + "/" + selectedItem);
+                    currentWindow.Show();
                 }
             };
             LoadDriversToComboBoxes();   
@@ -161,6 +197,139 @@ namespace FileManager
         private void RightDirectoryView_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void MoveButton_Click(object sender, EventArgs e)
+        {
+            int selected = LeftDirectoryView.SelectedIndex;
+
+            if (selected <= 0)
+            {
+                MessageBox.Show(Exceptions.NotSelectedError);
+                return;
+            }
+
+            string nameSelected = (string)LeftDirectoryView.Items[selected];
+
+            try
+            {
+
+                DirectoriesWorker.MoveFromPathToPath(LeftPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected,
+                                                     RightPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected);
+                MessageBox.Show("Удачно перемещено");
+            } 
+            catch (Exception)
+            {
+                MessageBox.Show(Exceptions.NotInOneDiskError);
+            }
+
+            LeftPath = LeftPath;
+            RightPath = RightPath;
+        }
+
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+            int selected = LeftDirectoryView.SelectedIndex;
+
+            if (selected <= 0)
+            {
+                MessageBox.Show(Exceptions.NotSelectedError);
+                return;
+            }
+
+            string nameSelected = (string)LeftDirectoryView.Items[selected];
+
+            DirectoriesWorker.Delete(LeftPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected);
+            MessageBox.Show("Удачно удалено");
+
+
+            LeftPath = LeftPath;
+            RightPath = RightPath;
+        }
+
+        private void CopyButton_Click(object sender, EventArgs e)
+        {
+            int selected = LeftDirectoryView.SelectedIndex;
+
+            if (selected <= 0)
+            {
+                MessageBox.Show(Exceptions.NotSelectedError);
+                return;
+            }
+
+            string nameSelected = (string)LeftDirectoryView.Items[selected];
+
+            try
+            {
+                DirectoriesWorker.Copy(LeftPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected,
+                                                     RightPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected);
+                MessageBox.Show("Удачно скопировано");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            LeftPath = LeftPath;
+            RightPath = RightPath;
+        }
+
+        private void SwapButton_Click(object sender, EventArgs e)
+        {
+            string temp = LeftPath;
+            LeftPath = RightPath;
+            RightPath = temp;
+        }
+
+        private void CompressButton_Click(object sender, EventArgs e)
+        {
+            int selected = LeftDirectoryView.SelectedIndex;
+
+            if (selected <= 0)
+            {
+                MessageBox.Show(Exceptions.NotSelectedError);
+                return;
+            }
+
+            string nameSelected = (string)LeftDirectoryView.Items[selected];
+
+            try
+            {
+                DirectoriesWorker.Zip(LeftPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected, LeftPath + "/" + nameSelected + ".gzip");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+
+            LeftPath = LeftPath;
+            RightPath = RightPath;
+        }
+
+        private void DecompressButton_Click(object sender, EventArgs e)
+        {
+            int selected = LeftDirectoryView.SelectedIndex;
+
+            if (selected <= 0)
+            {
+                MessageBox.Show(Exceptions.NotSelectedError);
+                return;
+            }
+
+            string nameSelected = (string)LeftDirectoryView.Items[selected];
+
+            try
+            {
+                DirectoriesWorker.UnZip(LeftPath + (nameSelected[0] == '/' ? "" : "/") + nameSelected, 
+                                        LeftPath + "/" + nameSelected.Substring(0, nameSelected.Length - 4));
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            LeftPath = LeftPath;
+            RightPath = RightPath;
         }
     }
 }

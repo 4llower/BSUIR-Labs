@@ -8,3 +8,4 @@ D:\Projects\Pet Projects\BSUIR-Labs\3-term(C#)\FileManager\obj\Debug\FileManager
 D:\Projects\Pet Projects\BSUIR-Labs\3-term(C#)\FileManager\obj\Debug\FileManager.csproj.CoreCompileInputs.cache
 D:\Projects\Pet Projects\BSUIR-Labs\3-term(C#)\FileManager\obj\Debug\FileManager.exe
 D:\Projects\Pet Projects\BSUIR-Labs\3-term(C#)\FileManager\obj\Debug\FileManager.pdb
+D:\Projects\Pet Projects\BSUIR-Labs\3-term(C#)\FileManager\obj\Debug\FileManager.EditWindow.resources

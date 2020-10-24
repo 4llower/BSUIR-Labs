@@ -1,9 +1,11 @@
 .model small
 .stack 100h
 .data
+ last_symbol db ?
+ ten dw 10
 .code
 
-remove_symbol proc
+remove_symbol proc C near
     mov ah, 02h
     mov dl, 8
     int 21h
@@ -14,22 +16,14 @@ remove_symbol proc
     ret
 remove_symbol endp
 
-is_overflow proc C near
-arg cur: word, need_to_add: word
-uses ax, dx
-    mov ax, word
-    mov dx, 10
-    mul dx
-    add ax, need_to_add
-    ret
-is_overflow endp
-
 get_number proc C near
 uses bx, cx, dx
     mov bx, 0
     mov cx, 0
 
     read_cycle:
+        mov ax, 0
+
         mov ah, 08h; read char symbol
         int 21h
 
@@ -46,44 +40,56 @@ uses bx, cx, dx
         ja read_cycle
 
         ; ** Magic **
+
+        mov last_symbol, al; save last symbol because working with ax(al changes)
         
-        ; overflow check
-        sub al, '0'
+        mov ax, bx; overflow check
+
+        mul ten
+        jc read_cycle ; 1st check
+
         mov dx, 0
-        mov dl, al
-        add al, '0'
-
-        call is_overflow C, bx, dx
-        jc read_cycle
-
-        ; add digit to number and calc
-        mov ax, bx
-        mov bx, 10
-        mul bx
+        mov dl, last_symbol
+        sub dl, '0'
+        cmp dl, 2
         add ax, dx
-        mov bx, ax
+        jc read_cycle ; 2nd check
+
+        mov bx, ax ; if we have no overflow add digit to number
         
-        ; writing symbol
-        add cx, 1
-        jmp symbol_write
+        add cx, 1 ; add 1 to length of number
+        jmp symbol_write ; writing symbol
 
         backspace_clicked:
-            call remove_symbol
-
-            cmp cx, 0
+            cmp cx, 0 ; check on empty string
             je read_cycle
 
-            add cx, -1
+             ; remove last symbol 
+
+
+            call remove_symbol
+              mov ax, bx
+              div ten
+              mov bx, ax
+            ;   div ten
+            ;   mov bx, ah
+
+            add cx, -1 ; decrease length of number
+
         jmp read_cycle ; start new iteration
 
         esc_clicked:
+            cmp cx, 0 ; check on empty string
+            je read_cycle
+
             delete_cycle:
                 call remove_symbol
             loop delete_cycle
+            mov bx, 0
         jmp read_cycle; start new iteration
 
         symbol_write:
-            mov dl, al
+            mov dl, last_symbol
             mov ah, 02h
             int 21h
 

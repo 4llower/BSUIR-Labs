@@ -1,9 +1,25 @@
 .model small
 .stack 100h
 .data
- last_symbol db ?
- ten dw 10
+    last_symbol db ?
+    zero_divide_error db "You can't divide on 0!!!$"
+    anwer_message db "Answer is $"
+    rest_message db "Rest is $"
+    first_number dw ?
+    second_number dw ?
 .code
+
+write_carryover proc C near
+uses ax, dx
+    mov dl, 0Ah;'\n' start
+    mov ah, 02h
+    int 21h
+
+    mov dl, 0Dh
+    mov ah, 02h
+    int 21h; '\n' end
+    ret
+write_carryover endp
 
 remove_symbol proc C near
     mov ah, 02h
@@ -41,8 +57,6 @@ uses bx, cx, dx
         jb read_cycle
         cmp al, '9'
         ja read_cycle
-
-        ; ** Magic **
 
         cmp al, '0' ; case then we have a prefix of '0'
         ja logic
@@ -111,15 +125,7 @@ uses bx, cx, dx
         jmp read_cycle
 
     return_read_number:
-        
-        mov dl, 0Ah;'\n' start
-        mov ah, 02h
-        int 21h
-
-        mov dl, 0Dh
-        mov ah, 02h
-        int 21h; '\n' end
-
+        call write_carryover
         mov ax, bx; move result to ax
         ret
 read_number endp
@@ -131,7 +137,7 @@ uses ax, bx, cx, dx
     mov cx, 0
 
     fill_stack:
-        mov dx, 0 ; divide on ten
+        mov dx, 0 ; divide on 10
         mov bx, 10
         div bx 
         
@@ -162,9 +168,49 @@ main:
     mov ds, ax 
 
     call read_number
+    mov first_number, ax
+    
+    call read_number
+    mov second_number, ax
+    cmp second_number, 0
+    jne answer
 
-    call print_number C, ax
+    while_second_number_zero:
+        mov ah, 09h
+        lea dx, zero_divide_error
+        int 21h
+        call write_carryover
 
+        call read_number
+        mov second_number, ax
+
+        cmp second_number, 0
+        je while_second_number_zero
+
+    answer:
+        mov dx, 0
+        mov ax, first_number
+        mov bx, second_number
+        div bx
+
+        push dx
+        push ax
+
+        mov ah, 09h
+        lea dx, anwer_message
+        int 21h
+
+        pop ax
+        call print_number C, ax
+        call write_carryover
+
+        mov ah, 09h
+        lea dx, rest_message
+        int 21h
+
+        pop dx
+        call print_number C, dx
+        call write_carryover
     return: 
         mov ah, 4ch ; exit interrupt
         int 21h

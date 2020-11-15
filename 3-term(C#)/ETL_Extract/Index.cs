@@ -1,4 +1,5 @@
 ﻿using ETL_Extract.Helpers;
+using ETL_Extract.Lib;
 using System;
 
 namespace ETL_Extract
@@ -8,6 +9,8 @@ namespace ETL_Extract
         static void Main(string[] args)
         {
             EnvSettings.Initialize();
+            Monitoring.Run();
+            Console.ReadKey();
         }
     }
 }

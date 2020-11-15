@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager", "FileManager.csproj", "{FFCC7FCB-8173-44FF-90E2-FAB2299549DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "overloading", "overloading.csproj", "{E8EB5929-453D-4C32-9BDE-3B4EAE48C775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FFCC7FCB-8173-44FF-90E2-FAB2299549DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FFCC7FCB-8173-44FF-90E2-FAB2299549DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FFCC7FCB-8173-44FF-90E2-FAB2299549DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FFCC7FCB-8173-44FF-90E2-FAB2299549DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8EB5929-453D-4C32-9BDE-3B4EAE48C775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8EB5929-453D-4C32-9BDE-3B4EAE48C775}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8EB5929-453D-4C32-9BDE-3B4EAE48C775}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8EB5929-453D-4C32-9BDE-3B4EAE48C775}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {100F5E09-A70A-4A29-AA45-6E35C997BA2E}
+		SolutionGuid = {F03AE776-D333-48CA-AAC7-EB2465BD8B7F}
 	EndGlobalSection
 EndGlobal

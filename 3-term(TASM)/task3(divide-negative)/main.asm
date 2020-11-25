@@ -216,6 +216,11 @@ main:
         lea dx, anwer_message
         int 21h
 
+        pop ax
+        cmp ax, 0
+        push ax
+        je answer_number_print
+
         cmp negative_count, 1
         je minus_print1
         
@@ -227,6 +232,11 @@ main:
         mov ah, 09h
         lea dx, rest_message
         int 21h
+
+        pop dx
+        cmp dx, 0
+        push dx
+        je rest_number_print
     
         cmp negative_count, 1
         je minus_print2
@@ -242,6 +252,8 @@ main:
             jmp answer_number_print
 
         minus_print2:
+            cmp negative_input, 1
+            je rest_number_print
             call write_minus C
             jmp rest_number_print
     return: 

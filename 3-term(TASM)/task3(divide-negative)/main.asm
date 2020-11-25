@@ -209,7 +209,7 @@ main:
 
     answer:
         mov dx, negative_input
-        mov first_negative, dx
+        mov second_negative, dx
         mov dx, 0
 
         mov ax, first_number
@@ -251,6 +251,10 @@ main:
         cmp dx, 0
         push dx
         je rest_number_print
+
+        mov bx, first_number
+        cmp bx, second_number 
+        jb minus_print2_check    
     
         cmp negative_count, 0
         je rest_number_print
@@ -273,6 +277,11 @@ main:
 
         minus_print2:
             call write_minus C
+            jmp rest_number_print
+
+        minus_print2_check:
+            cmp first_negative, 1
+            je minus_print2
             jmp rest_number_print
     return: 
         mov ah, 4ch ; exit interrupt

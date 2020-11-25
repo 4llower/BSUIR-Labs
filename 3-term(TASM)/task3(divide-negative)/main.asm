@@ -91,14 +91,14 @@ uses bx, cx, dx
             mov dx, 0
             mov dl, last_symbol
             sub dl, '0'
-            add ax, dx
+            add ax, dx  
             jc read_cycle ; 2nd checл
             mov bx, ax ; if we have no overflow add digit to number
             inc cx; add 1 to length of number
             jmp symbol_write ; writing symbol
         
         minus_entered:
-            cmp negative_input, 0
+            cmp cx, 0
             ja read_cycle
             push cx
             mov cx, 1

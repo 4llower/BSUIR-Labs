@@ -9,6 +9,8 @@
     second_number dw ?
     negative_input dw 0
     negative_count dw 0
+    first_negative dw 0
+    second_negative dw 0
 .code
 
 write_carryover proc C near
@@ -185,6 +187,8 @@ main:
 
     call read_number
     mov first_number, ax
+    mov ax, negative_input
+    mov first_negative, ax
     
     call read_number
     mov second_number, ax
@@ -204,7 +208,10 @@ main:
         je while_second_number_zero
 
     answer:
+        mov dx, negative_input
+        mov first_negative, dx
         mov dx, 0
+
         mov ax, first_number
         mov bx, second_number
         div bx
@@ -221,9 +228,16 @@ main:
         push ax
         je answer_number_print
 
-        cmp negative_count, 1
+        ;check
+        cmp negative_count, 0
+        je answer_number_print
+
+        cmp negative_count, 2
+        je answer_number_print
+
+        cmp first_negative, 1
         je minus_print1
-        
+
         answer_number_print:
             pop ax
             call print_number C, ax
@@ -238,9 +252,15 @@ main:
         push dx
         je rest_number_print
     
-        cmp negative_count, 1
+        cmp negative_count, 0
+        je rest_number_print
+
+        cmp negative_count, 2
         je minus_print2
 
+        cmp second_negative, 1
+        je minus_print2
+    
         rest_number_print: 
             pop dx
             call print_number C, dx
@@ -252,8 +272,6 @@ main:
             jmp answer_number_print
 
         minus_print2:
-            cmp negative_input, 1
-            je rest_number_print
             call write_minus C
             jmp rest_number_print
     return: 

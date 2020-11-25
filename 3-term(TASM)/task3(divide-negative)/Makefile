@@ -1,7 +1,7 @@
 # INCOMING
 FILENAMES=MAIN
 
-DOSBOX_EXECUTOR=dosbox-x
+DOSBOX_EXECUTOR=dosbox
 
 MAKEFILE_PATH=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_FOLDER=$(patsubst %/,%,$(dir $(MAKEFILE_PATH)))

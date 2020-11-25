@@ -235,8 +235,7 @@ main:
         cmp negative_count, 2
         je answer_number_print
 
-        cmp first_negative, 1
-        je minus_print1
+        jmp minus_print1
 
         answer_number_print:
             pop ax
@@ -259,11 +258,10 @@ main:
         cmp negative_count, 0
         je rest_number_print
 
-        cmp negative_count, 2
-        je minus_print2
+        cmp first_negative, 0
+        je rest_number_print
 
-        cmp second_negative, 1
-        je minus_print2
+        jmp minus_print2
     
         rest_number_print: 
             pop dx

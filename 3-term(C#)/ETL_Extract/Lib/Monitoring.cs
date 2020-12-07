@@ -1,10 +1,8 @@
 ﻿using ETL_Extract.Explorers;
 using ETL_Extract.Helpers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
-using System.Text;
+using System.Security.Cryptography;
 
 namespace ETL_Extract.Lib
 {
@@ -19,13 +17,24 @@ namespace ETL_Extract.Lib
             };
 
             Transfer.InitializeTargetFolder();
-
+           
             watcher.Created += OnCreated;
         }
 
         private static void OnCreated(object source, FileSystemEventArgs e)
         {
-            Console.WriteLine("File: " + e.FullPath + " " + e.ChangeType);
+            var folderExplorer = new Folder();
+            if (folderExplorer.IsExists(e.FullPath)) return;
+
+            using Aes tempAes = Aes.Create();
+            var createdFileReader = new StreamReader(e.FullPath);
+            var sourceText = createdFileReader.ReadToEnd();
+            createdFileReader.Dispose();
+
+            var encryptedText = Encryption.Encrypt(sourceText, tempAes.Key, tempAes.IV);
+            var createdFileWriter = new StreamWriter(e.FullPath);
+            createdFileWriter.Write(System.Text.Encoding.UTF8.GetString(encryptedText));
+            createdFileWriter.Dispose();
         }
     }
 }

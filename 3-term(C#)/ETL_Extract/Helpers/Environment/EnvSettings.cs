@@ -11,13 +11,19 @@ namespace ETL_Extract.Helpers
 {
     static public class EnvSettings
     {
-        public static dynamic Env { get; set; }
+        public class Environment {
+            public string SOURCE_DIRECTORY { get; set; }
+            public string TARGET_DIRECTORY { get; set; }
+        }
+
+        public static Environment Env;
+
         private static readonly string pathToSettings = "../../../appsettings.json";
         // use at launch application
         static public void Initialize()
         {
             StreamReader stream = new StreamReader(pathToSettings);
-            Env = JsonConvert.DeserializeObject(stream.ReadToEnd());
+            Env = JsonConvert.DeserializeObject<Environment>(stream.ReadToEnd());
         }
     }
 }

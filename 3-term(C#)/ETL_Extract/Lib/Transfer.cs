@@ -8,12 +8,12 @@ namespace ETL_Extract.Lib
 {
     public static class Transfer
     {
-        public static void InitializeTargetFolder()
+        public static void InitializeTargetFolder(string path)
         {
-            Folder folder = new Folder();
-            if (!folder.IsExists(Convert.ToString(EnvSettings.Env.TARGET_DIRECTORY)))
+            FolderExplorer folder = new FolderExplorer();
+            if (!folder.IsExists(path))
             {
-                folder.Create(Convert.ToString(EnvSettings.Env.TARGET_DIRECTORY));
+                folder.Create(path);
             }
         }
     }

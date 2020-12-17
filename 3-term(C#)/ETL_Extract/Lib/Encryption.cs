@@ -29,8 +29,9 @@ namespace ETL_Extract.Lib
         }
 
         public static string Decrypt(byte[] cipherText, byte[] Key, byte[] IV)
-        {
+        { 
             string decrypted = null;
+            
             using (Aes aesAlg = Aes.Create())
             {
                 aesAlg.Key = Key;

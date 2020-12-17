@@ -9,7 +9,11 @@ namespace ETL_Extract
         static void Main(string[] args)
         {
             EnvSettings.Initialize();
-            Monitoring.Run();
+
+            var Watcher = new TargetWatcher(EnvSettings.Env.SOURCE_DIRECTORY);
+
+            Watcher.Run();
+
             Console.ReadKey();
         }
     }

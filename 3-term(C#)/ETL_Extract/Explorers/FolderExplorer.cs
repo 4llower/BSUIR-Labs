@@ -4,11 +4,11 @@ using System.IO;
 
 namespace ETL_Extract.Explorers
 {
-    public class Folder : Explorer
+    public class FolderExplorer : Explorer
     {
-        public override void Create(string path)
+        public override object Create(string path)
         {
-            Directory.CreateDirectory(GenerateUniqueName(path));
+            return Directory.CreateDirectory(GenerateUniqueName(path));
         }
 
         public override bool IsExists(string path)

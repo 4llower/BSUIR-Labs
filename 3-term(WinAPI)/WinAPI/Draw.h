@@ -2,13 +2,16 @@
 #include <vector>
 #include <memory>
 #include "Point.h"
+#include "Circle.h"
+#include "Square.h"
 
 class Draw {
 public:
 	struct FigureState {
 		int x, y;
 		DrawProperties::DrawType drawType;
-		int length;
+		int brushSize;
+		int objectSize;
 		DrawProperties::Color color;
 	};
 
@@ -17,4 +20,5 @@ public:
 
 private:
 	std::vector<FigureState> states = {};
+	void removeIntersectFigures();
 };

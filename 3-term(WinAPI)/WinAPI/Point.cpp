@@ -4,7 +4,7 @@ COLORREF Point::getColor(DrawProperties::Color color)
 {
 	switch (color) {
 	case DrawProperties::Color::Blue:
-		return RED;
+		return BLUE;
 	case DrawProperties::Color::Green:
 		return GREEN;
 	case DrawProperties::Color::Red:
@@ -14,14 +14,14 @@ COLORREF Point::getColor(DrawProperties::Color color)
 	}
 }
 
-void Point::drawInstance(HDC hdc, int x, int y, int length, DrawProperties::Color color)
+void Point::drawInstance(HDC hdc, int x, int y, int brushSize, int objectSize, DrawProperties::Color color)
 {
-	auto brush = CreateSolidBrush(RED);
-	auto pen = CreatePen(PS_SOLID, 1,RED);
+	auto brush = CreateSolidBrush(this->getColor(color));
+	auto pen = CreatePen(PS_SOLID, 1, this->getColor(color));
 	SelectObject(hdc, brush);
 	SelectObject(hdc, pen);
 	
-	Ellipse(hdc, x - length / 2, y - length / 2, x + length / 2, y + length / 2);
+	Ellipse(hdc, x - objectSize / 2, y - objectSize / 2, x + objectSize / 2, y + objectSize / 2);
 
 	DeleteObject(brush);
 	DeleteObject(pen);

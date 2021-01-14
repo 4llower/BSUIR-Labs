@@ -18,6 +18,7 @@
 #endif
 // Следующие стандартные значения для новых объектов
 //
+
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 
@@ -28,3 +29,4 @@
 #define _APS_NEXT_SYMED_VALUE		110
 #endif
 #endif
+

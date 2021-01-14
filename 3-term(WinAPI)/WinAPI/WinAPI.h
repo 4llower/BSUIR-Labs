@@ -2,6 +2,6 @@
 
 #include "resource.h"
 #include "Draw.h"
-#include <windows.h>
 
+void CreateBookmarks(HWND);
 auto drawHandler = new Draw();

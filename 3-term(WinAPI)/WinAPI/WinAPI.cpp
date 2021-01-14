@@ -125,25 +125,90 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {   
     static int lastHandledX = 0, lastHandledY = 0;
-    static int currentLength = 3;
+    static int currentBrushSize = 10;
+    static int currentObjectSize = 5;
     static DrawProperties::Color currentColor = DrawProperties::Color::Blue;
     static DrawProperties::DrawType currentMode = DrawProperties::DrawType::Point;
     static bool isMouseHold = false;
 
     switch (message)
     {
+    case WM_CREATE: {
+        CreateBookmarks(hWnd);
+        break;
+    }
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
             // Разобрать выбор в меню:
             switch (wmId)
             {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            case MENU_ERASER: {
+                currentMode = DrawProperties::DrawType::Point;
+                currentColor = DrawProperties::Color::White;
+                
                 break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
+            }
+            case MENU_CIRCLE: {
+                currentMode = DrawProperties::DrawType::Circle;
                 break;
+            }
+            case MENU_SQUARE: {
+                currentMode = DrawProperties::DrawType::Square;
+                break;
+            }
+            case MENU_PEN: {
+                currentMode = DrawProperties::DrawType::Point;
+                currentObjectSize = 5;
+                break;
+            }
+            case MENU_FILLING: {
+                currentMode = DrawProperties::DrawType::Filling;
+            }
+            case MENU_BRUSH_5px: {
+                currentBrushSize = 5;
+                break;
+            }
+            case MENU_BRUSH_10px: {
+                currentBrushSize = 10;
+                break;
+            }
+            case MENU_BRUSH_25px: {
+                currentBrushSize = 25;
+                break;
+            }
+            case MENU_BRUSH_50px: {
+                currentBrushSize = 50;
+                break;
+            case MENU_OBJECT_5px: {
+                currentObjectSize = 5;
+                break;
+            }
+            case MENU_OBJECT_10px: {
+                currentObjectSize = 10;
+                break;
+            }
+            case MENU_OBJECT_25px: {
+                currentObjectSize = 25;
+                break;
+            }
+            case MENU_OBJECT_50px: {
+                currentObjectSize = 50;
+                break;
+            }
+            case MENU_COLOR_RED: {
+                currentColor = DrawProperties::Color::Red;
+                break;
+            }
+            case MENU_COLOR_BLUE: {
+                currentColor = DrawProperties::Color::Blue;
+                break;
+            }
+            case MENU_COLOR_GREEN: {
+                currentColor = DrawProperties::Color::Green;
+                break;
+            }
+            }
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
@@ -163,10 +228,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
     case WM_MOUSEMOVE: {
         if (isMouseHold) {
-            lastHandledX = GET_X_LPARAM(lParam);
-            lastHandledY = GET_Y_LPARAM(lParam);
-            drawHandler->addNewState({ lastHandledX, lastHandledY, currentMode, currentLength, currentColor });
-            RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_INTERNALPAINT);
+            if (currentMode == DrawProperties::DrawType::Point) {
+                lastHandledX = GET_X_LPARAM(lParam);
+                lastHandledY = GET_Y_LPARAM(lParam);
+                drawHandler->addNewState({ lastHandledX, lastHandledY, currentMode, currentBrushSize, currentObjectSize, currentColor });
+                RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_INTERNALPAINT);
+            }
         }
         break;
     }
@@ -178,7 +245,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         isMouseHold = false;
         lastHandledX = GET_X_LPARAM(lParam);
         lastHandledY = GET_Y_LPARAM(lParam);
-        drawHandler->addNewState({ lastHandledX, lastHandledY, currentMode, currentLength, currentColor });
+        drawHandler->addNewState({ lastHandledX, lastHandledY, currentMode, currentBrushSize, currentObjectSize, currentColor });
+        RedrawWindow(hWnd, NULL, NULL, RDW_INVALIDATE | RDW_INTERNALPAINT);
         break;
     }
     case WM_DESTROY:
@@ -190,22 +258,38 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// Обработчик сообщений для окна "О программе".
-INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    UNREFERENCED_PARAMETER(lParam);
-    switch (message)
-    {
-    case WM_INITDIALOG:
-        return (INT_PTR)TRUE;
 
-    case WM_COMMAND:
-        if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
-        {
-            EndDialog(hDlg, LOWORD(wParam));
-            return (INT_PTR)TRUE;
-        }
-        break;
-    }
-    return (INT_PTR)FALSE;
+void CreateBookmarks(HWND hWnd) {
+    HMENU hMenubar = CreateMenu();
+    HMENU instrument = CreateMenu();
+    HMENU brushSize = CreateMenu();
+    HMENU objectSize = CreateMenu();
+    HMENU color = CreateMenu();
+
+    AppendMenuW(instrument, MF_STRING, MENU_ERASER, L"&Ластик");
+    AppendMenuW(instrument, MF_STRING, MENU_CIRCLE, L"&Круг");
+    AppendMenuW(instrument, MF_STRING, MENU_SQUARE, L"&Квадрат");
+    AppendMenuW(instrument, MF_STRING, MENU_PEN, L"&Карандаш");
+    AppendMenuW(instrument, MF_STRING, MENU_FILLING, L"&Заливка");
+
+    AppendMenuW(brushSize, MF_STRING, MENU_BRUSH_5px, L"&5px");
+    AppendMenuW(brushSize, MF_STRING, MENU_BRUSH_10px, L"&10px");
+    AppendMenuW(brushSize, MF_STRING, MENU_BRUSH_25px, L"&25px");
+    AppendMenuW(brushSize, MF_STRING, MENU_BRUSH_50px, L"&50px");
+
+    AppendMenuW(objectSize, MF_STRING, MENU_OBJECT_5px, L"&5px");
+    AppendMenuW(objectSize, MF_STRING, MENU_OBJECT_10px, L"&10px");
+    AppendMenuW(objectSize, MF_STRING, MENU_OBJECT_25px, L"&25px");
+    AppendMenuW(objectSize, MF_STRING, MENU_OBJECT_50px, L"&50px");
+
+    AppendMenuW(color, MF_STRING, MENU_COLOR_RED, L"&Красный");
+    AppendMenuW(color, MF_STRING, MENU_COLOR_GREEN, L"&Зеленый");
+    AppendMenuW(color, MF_STRING, MENU_COLOR_BLUE, L"&Синий");
+
+    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)instrument, L"&Инструмент");
+    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)brushSize, L"&Размер кисти");
+    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)objectSize, L"&Размер обьекта");
+    AppendMenuW(hMenubar, MF_POPUP, (UINT_PTR)color, L"&Цвет");
+
+    SetMenu(hWnd, hMenubar);
 }

@@ -10,8 +10,7 @@
 class Point
 {
 public:
-    virtual void drawInstance(HDC, int, int, int, DrawProperties::Color);
-private:
+    virtual void drawInstance(HDC, int, int, int, int, DrawProperties::Color);
     COLORREF getColor(DrawProperties::Color);
 };
 

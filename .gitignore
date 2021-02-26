@@ -17,6 +17,11 @@
 .idea
 .vscode
 
+# Python
+dist
+build
+venv
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

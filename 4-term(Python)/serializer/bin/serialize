@@ -25,7 +25,7 @@ else:
     print('Add the --env option where placed environment file\n')
     print('\033[94m' + 'Flags convert options -> ' + '\033[0m')
     print('Add the flags: '
-          '--packages(destination to initial file, ' + '\033[1m' + '--packages ~/file.json)' + '\033[0m\n'
+          '--local_packages(destination to initial file, ' + '\033[1m' + '--local_packages ~/file.json)' + '\033[0m\n'
           '--to(destination to target converted file, ' + '\033[1m' + '--to ~/target.toml)' + '\033[0m\n'
           '--format(format of target converted file, --format TOML)\n'
           '--primary(format of initial file, --format JSON)\n')

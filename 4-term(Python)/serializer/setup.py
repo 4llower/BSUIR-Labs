@@ -1,3 +1,3 @@
 from setuptools import setup
 
-setup(packages=['serializers'], scripts=['bin/serialize'])
+setup(packages=['create_serializer', 'serializers'], scripts=['bin/serialize'], name="serialize_utility")

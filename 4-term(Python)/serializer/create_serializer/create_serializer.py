@@ -1,7 +1,7 @@
-from json_serializer import JSONSerializer
-from pickle_serializer import PICKLESerializer
-from toml_serializer import TOMLSerializer
-from yaml_serializer import YAMLSerializer
+from serializers import JSONSerializer
+from serializers import PICKLESerializer
+from serializers import TOMLSerializer
+from serializers import YAMLSerializer
 
 
 def create_serializer(serializer_type):
@@ -20,4 +20,4 @@ def create_serializer(serializer_type):
     if not serializer_type_to_serializer_object.get(serializer_type):
         raise ValueError("%s doesn't support" % serializer_type)
 
-    return serializer_type_to_serializer_object(serializer_type)
+    return serializer_type_to_serializer_object[serializer_type]

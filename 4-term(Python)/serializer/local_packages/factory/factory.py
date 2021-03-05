@@ -11,12 +11,10 @@ def create_serializer(serializer_type):
     :param serializer_type: string such as JSON | YAML | PICKLE | TOML
     :return: serializer which has methods from common_serializer
     """
-    serializer_type_to_serializer_object = {
-        SupportedSerializers.JSON: JSONSerializer(),
-        SupportedSerializers.PICKLE: PICKLESerializer(),
-        SupportedSerializers.TOML: TOMLSerializer(),
-        SupportedSerializers.YAML: YAMLSerializer(),
-    }
+    serializer_type_to_serializer_object = {"JSON": JSONSerializer(),
+                                            "PICKLE": PICKLESerializer(),
+                                            "TOML": TOMLSerializer(),
+                                            "YAML": YAMLSerializer()}
 
     if not serializer_type_to_serializer_object.get(serializer_type):
         raise ValueError("%s doesn't support" % serializer_type)

@@ -35,12 +35,17 @@ elif args.src and args.to and args.format and args.primary:
         primary_serializer = create_serializer(args.primary)
         target_serializer = create_serializer(args.format)
 
-        current_object = primary_serializer.load(args.src)
-        target_serializer.dump(current_object, args.to)
+        current_object = None
+
+        with open(args.src, 'r') as fp:
+            current_object = primary_serializer.load(fp)
+
+        with open(args.to, 'w') as fp:
+            target_serializer.dump(current_object, fp)
 
         print(ConsoleColors.OKGREEN + "Serialize was completed. Check the %s source" % args.to + ConsoleColors.ENDC)
     except Exception as e:
-        print(ConsoleColors.FAIL + "Serialize was crashed. The error is  %s" % e + ConsoleColors.ENDC)
+        print(ConsoleColors.FAIL + "Serialize was crashed. %s" % e + ConsoleColors.ENDC)
 
 else:
     print(ConsoleColors.WARNING + 'Follow the next instructions:\n' + ConsoleColors.ENDC)
@@ -52,3 +57,5 @@ else:
     print(' --to(destination to target converted file, ' + ConsoleColors.BOLD + '--to ~/target.toml)' + ConsoleColors.ENDC)
     print(' --format(format of target converted file, --format TOML)')
     print(' --primary(format of initial file, --format JSON)')
+
+# convert --src 1.json --to 2.json --primary JSON --format JSON

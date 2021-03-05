@@ -3,7 +3,7 @@ class CommonSerializer:
     def dump(self, obj, fp):
         """
         Serialize Python object to file
-        :param obj: object which need to serialize
+        :param obj: object which need to convert
         :param fp: path to file which need to write python object
         :return: None
         """
@@ -12,7 +12,7 @@ class CommonSerializer:
     def dumps(self, obj):
         """
         Serialize Python object to string
-        :param obj: object which need to serialize
+        :param obj: object which need to convert
         :return: serialized string
         """
         pass

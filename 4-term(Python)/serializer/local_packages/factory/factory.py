@@ -1,7 +1,8 @@
-from local_packages.serializers import JSONSerializer
-from local_packages.serializers import PICKLESerializer
-from local_packages.serializers import TOMLSerializer
-from local_packages.serializers import YAMLSerializer
+from ..serializers import JSONSerializer
+from ..serializers import PICKLESerializer
+from ..serializers import TOMLSerializer
+from ..serializers import YAMLSerializer
+from .supported_serializers import SupportedSerializers
 
 
 def create_serializer(serializer_type):
@@ -11,10 +12,10 @@ def create_serializer(serializer_type):
     :return: serializer which has methods from common_serializer
     """
     serializer_type_to_serializer_object = {
-        "JSON": JSONSerializer(),
-        "PICKLE": PICKLESerializer(),
-        "TOML": TOMLSerializer(),
-        "YAML": YAMLSerializer(),
+        SupportedSerializers.JSON: JSONSerializer(),
+        SupportedSerializers.PICKLE: PICKLESerializer(),
+        SupportedSerializers.TOML: TOMLSerializer(),
+        SupportedSerializers.YAML: YAMLSerializer(),
     }
 
     if not serializer_type_to_serializer_object.get(serializer_type):

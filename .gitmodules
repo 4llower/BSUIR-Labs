@@ -1,0 +1,6 @@
+[submodule "4-term(Statistics)/mate-meet"]
+	path = 4-term(Statistics)/mate-meet
+	url = https://github.com/4llower/mate-meet.git
+[submodule "4-term(Statistics)/python-objects-serializer"]
+	path = 4-term(Statistics)/python-objects-serializer
+	url = https://github.com/4llower/python-objects-serializer.git
